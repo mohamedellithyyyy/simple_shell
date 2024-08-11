@@ -1,40 +1,38 @@
-#include "main.h"
+#include "holberton.h"
 
 /**
- * main - Entry point for a simple shell
- * Description: This program serves as a simple shell.
- * @argc: Number of arguments.
- * @argv: Array of arguments.
- * @env: Array of environment variables.
- * Return: Always returns 0.
- */	
-
-int main(int argc, char **argv, char **env)
+ * main - entry point for application
+ * @ac: argument count
+ * @av: argument vector
+ * Return: 0 on success
+ */
+int main(int ac, char **av)
 {
-    int point = 1, dot = 0;
-    _arg args;
-	
-    initialize_args(&args, argc, argv, env);
+	config build;
 
-	 while (1)
-    {
-	 if (isatty(STDIN_FILENO) && point && !args.fd)
-        {
-	_putchar('$');
-	 _putchar(' ');
-        }
+	(void)ac;
+	signal(SIGINT, sigintHandler);
+	configInit(&build);
+	build.shellName = av[0];
+	shell(&build);
+	return (0);
+}
 
-	signal(SIGINT, new_line);
-	 args.i++;	
-       	point = command_getter(&args, point, &dot);
-
-	 if (input_helper(&args))
-	       	continue;
-	
-       	args.token = token_maker(args.command, " ");
-       		if (command_maker(&args) == 255)	
-		prog_exit(&args);
-    }
-
-    return 0;
+/**
+ * configInit - initialize member values for config struct
+ * @build: input build
+ * Return: build with initialized members
+ */
+config *configInit(config *build)
+{
+	build->env = generateLinkedList(environ);
+	build->envList = NULL;
+	build->args = NULL;
+	build->buffer = NULL;
+	build->path = _getenv("PATH", environ);
+	build->fullPath = NULL;
+	build->lineCounter = 0;
+	build->shellName = NULL;
+	build->errorStatus = 0;
+	return (build);
 }
