@@ -1,5 +1,5 @@
-#ifndef _HOLBERTON_H_
-#define _HOLBERTON_H_
+#ifndef HOLBERTON_H
+#define HOLBERTON_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +13,7 @@
 #include <signal.h>
 #include <limits.h>
 
-/* ERRORS */
+/* --- Built-in Errors --- */
 #define BUFSIZE 256
 #define ENOSTRING 1106
 #define EILLEGAL 227
@@ -37,26 +37,26 @@ typedef struct linkedList
 /**
  * struct configurations - configuration of build settings
  * @env: linked list of local env variables
- * @envList: array of env variables to put into execve
+ * @env_list: array of env variables to put into execve
  * @args: array of argument strings
  * @buffer: string buffer of user input
  * @path: array of $PATH locations
- * @fullPath: string of path with correct prepended $PATH
- * @shellName: name of shell (argv[0])
- * @lineCounter: counter of lines users have entered
- * @errorStatus: error status of last child process
+ * @full_path: string of path with correct prepended $PATH
+ * @shell_name: name of shell (argv[0])
+ * @count_line: counter of lines users have entered
+ * @error_status: error status of last child process
  */
 typedef struct configurations
 {
 	linked_l *env;
-	char **envList;
+	char **env_list;
 	char **args;
 	char *buffer;
 	char *path;
-	char *fullPath;
-	char *shellName;
-	unsigned int lineCounter;
-	int errorStatus;
+	char *full_path;
+	char *shell_name;
+	unsigned int count_line;
+	int error_status;
 } config;
 
 /**
@@ -70,118 +70,114 @@ typedef struct builtInCommands
 	int (*func)(config *build);
 } type_b;
 
-/* main */
-config *configInit(config *build);
+/* --- main --- */
+config *config_init(config *build);
 
-/* built_ins */
-_Bool findBuiltIns(config *build);
-int exitFunc(config *build);
-int historyFunc(config *build);
-int aliasFunc(config *build);
+/* --- built_ins --- */
+_Bool find_built_ins(config *build);
+int exit_function(config *build);
+int history_function(config *build);
+int alias_function(config *build);
 
-/* cd */
-int cdFunc(config *);
-_Bool cdToHome(config *build);
-_Bool cdToPrevious(config *build);
-_Bool cdToCustom(config *build);
-_Bool updateEnviron(config *build);
-
-/* cd2 */
-int updateOld(config *build);
-_Bool updateCur(config *build, int index);
-
-/* env */
-int envFunc(config *build);
-int setenvFunc(config *build);
-int unsetenvFunc(config *build);
-int _isalpha(int c);
-
-/* help */
-int helpFunc(config *build);
-int displayHelpMenu(void);
-int helpExit(config *build);
-int helpEnv(config *build);
-int helpHistory(config *build);
-
-/* help2 */
-int helpAlias(config *build);
-int helpCd(config *biuld);
-int helpSetenv(config *build);
-int helpUnsetenv(config *build);
-int helpHelp(config *build);
-
-/* built_in_helpers*/
-int countArgs(char **args);
+/* --- built_in_controls --- */
+int count_args(char **args);
 int _atoi(char *s);
 
-/* shell */
+/* --- cd --- */
+int implement_cd(config *);
+_Bool cd_to_home(config *build);
+_Bool cd_to_previous(config *build);
+_Bool cd_to_custom(config *build);
+_Bool update_environ(config *build);
+
+/* --- cd2 --- */
+int update_old(config *build);
+_Bool update_cur_dir(config *build, int index);
+
+/* --- env_variables --- */
+int env_function(config *build);
+int set_env_func(config *build);
+int unset_env_func(config *build);
+int is_alpha(int c);
+
+/* --- help_funs --- */
+int help_function(config *build);
+int display_help_menu(void);
+int help_guide_exit(config *build);
+int help_env(config *build);
+int help_history(config *build);
+
+/* --- help_funs2 --- */
+int help_alias(config *build);
+int help_cd(config *biuld);
+int help_set_env(config *build);
+int help_unset_env(config *build);
+int help_guide(config *build);
+
+/* --- shell --- */
 void shell(config *build);
-void checkAndGetLine(config *build);
-void forkAndExecute(config *build);
-void stripComments(char *str);
-void convertLLtoArr(config *build);
+void validate_line(config *build);
+void fork_and_execute(config *build);
+void strip_comments(char *str);
+void convert_llist_to_arr(config *build);
 
 /* _getenv */
 char *_getenv(char *input, char **environ);
 
-/* error_handler */
-void errorHandler(config *build);
-unsigned int countDigits(int num);
+/* handle_errors - managing wrong user inputs*/
+void handle_errors(config *build);
+unsigned int count_num_digits(int num);
 char *itoa(unsigned int num);
-char *getErrorMessage();
+char *get_error_message();
 
-/* shell_helpers */
-void insertNullByte(char *str, unsigned int index);
-void displayPrompt(void);
-void displayNewLine(void);
-void sigintHandler(int sigint);
+/* shell_controls */
+void get_null_bytes(char *str, unsigned int index);
+void get_prompt(void);
+void put_new_line(void);
+void handle_sigint(int sigint);
 
-/* check_path */
-_Bool checkPath(config *);
-_Bool checkEdgeCases(config *build);
+/* --- free --- */
+void free_member(config *build);
+void free_args_and_buffer(config *build);
+void free_args(char **args);
+void free_list(linked_l *head);
 
-/* split_string */
-_Bool splitString(config *build);
-unsigned int countWords(char *s);
-_Bool isSpace(char c);
+/* --- split_string --- */
+_Bool split_string(config *build);
+unsigned int count_words(char *s);
+_Bool is_space(char c);
 
-/* string_helpers1 */
+/* --- string_controls --- */
 int _strlen(char *s);
 char *_strcat(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
 char *_strdup(char *str);
 char *_strcpy(char *dest, char *src);
 
-/* string_helpers2 */
+/* --- string_controls2 --- */
 char *_strtok(char *str, char *delim);
 int _strcspn(char *string, char *chars);
 char *_strchr(char *s, char c);
 
-/* llfuncs1 */
-linked_l *addNode(linked_l **head, char *str);
-linked_l *addNodeEnd(linked_l **head, char *str);
-size_t printList(const linked_l *h);
-int searchNode(linked_l *head, char *str);
+/* --- check_path --- */
+_Bool check_path(config *);
+_Bool validate_constraints(config *build);
+
+/* --- linkedlist_funs1 --- */
+linked_l *add_node_to_front(linked_l **head, char *str);
+linked_l *add_node_to_end(linked_l **head, char *str);
+size_t print_list(const linked_l *h);
+int search_node(linked_l *head, char *str);
 size_t list_len(linked_l *h);
 
-/* llfuncs2 */
-int deleteNodeAtIndex(linked_l **head, unsigned int index);
+/* --- linkedlist_funs2 --- */
+int delete_node_at_index(linked_l **head, unsigned int index);
 linked_l *generateLinkedList(char **array);
-linked_l *addNodeAtIndex(linked_l **head, int index, char *str);
-char *getNodeAtIndex(linked_l *head, unsigned int index);
+linked_l *add_node_at_index(linked_l **head, int index, char *str);
+char *get_node_at_index(linked_l *head, unsigned int index);
 
-/* welcome */
-void welcome_screen_1(void);
-void welcome_screen_2(void);
-
-/* _realloc */
+/* --- _realloc --- */
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char *_memcpy(char *dest, char *src, unsigned int n);
 
-/* free */
-void freeMembers(config *build);
-void freeArgsAndBuffer(config *build);
-void freeArgs(char **args);
-void freeList(linked_l *head);
-
-#endif
+#endif /* HOLBERTON_H */
